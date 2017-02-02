@@ -82,19 +82,19 @@ class Node:
     self._parent = parent
     self._action = action
     self._pathCost = pathCost
-
+  
   def State(self):
     return self._state
-
+  
   def Parent(self):
     return self._parent
-
+  
   def Action(self):
     return self._action
-
+  
   def pathCost(self):
     return self._pathCost
-
+  
   def getGoalPath(self):
     """
     Returns goal path ACTIONS by reconstructing path from goal state node in search tree to start node
@@ -106,7 +106,7 @@ class Node:
     while soln.Parent():
       path.append(soln.Action())         
       #update soln to be soln's parent:
-      soln = soln.Parent
+      soln = soln.Parent()
     #return path in reverse with [::-1]
     return path[::-1]  
 
