@@ -1,0 +1,40 @@
+dhcp-10-134-223-156:search seanhendryx$ python2.7 pacman.py -l mediumMaze -p SearchAgent
+[SearchAgent] using function depthFirstSearch
+[SearchAgent] using problem type PositionSearchProblem
+Start: (34, 16)
+Is the start a goal? False
+Start's successors: [((34, 15), 'South', 1), ((33, 16), 'West', 1)]
+
+Found solution state! 
+
+Solution state:  
+(1, 1)
+Path found with total cost of 130 in 0.0 seconds
+Search nodes expanded: 147
+Pacman emerges victorious! Score: 380
+Average Score: 380.0
+Scores:        380
+Win Rate:      1/1 (1.00)
+Record:        Win
+
+
+######################################################################################################
+BFS
+dhcp-10-134-223-156:search seanhendryx$ python2.7 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+[SearchAgent] using function bfs
+[SearchAgent] using problem type PositionSearchProblem
+Start: (34, 16)
+Is the start a goal? False
+Start's successors: [((34, 15), 'South', 1), ((33, 16), 'West', 1)]
+
+Found solution state! 
+
+Solution state:  
+(1, 1)
+Path found with total cost of 68 in 0.0 seconds
+Search nodes expanded: 270
+Pacman emerges victorious! Score: 442
+Average Score: 442.0
+Scores:        442
+Win Rate:      1/1 (1.00)
+Record:        Win
