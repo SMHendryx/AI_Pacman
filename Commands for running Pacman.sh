@@ -8,6 +8,12 @@ python2.7 pacman.py -l bigMaze -z .5 -p SearchAgent
 #BFS
 python2.7 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
 
+#UCS:
+python2.7 pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
+python2.7 pacman.py -l mediumDottedMaze -p StayEastSearchAgent
+python2.7 pacman.py -l mediumScaryMaze -p StayWestSearchAgent
+
+
 ##################################################################################################
 #update master branch on github repo with local changes:
 git add .
