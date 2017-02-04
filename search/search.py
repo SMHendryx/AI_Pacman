@@ -125,7 +125,7 @@ def graphSearch(problem, frontier):
   explored = []
   #here
   while not frontier.isEmpty():
-    # pop search node from frontier and put it into parent variable:
+    # pop search node from frontier and put it into parent variable (note that this removes the search node "parent" from frontier):
     parent = frontier.pop()
     # check if current node in search tree is goal state:
     if problem.isGoalState(parent.State()):
@@ -135,6 +135,7 @@ def graphSearch(problem, frontier):
       return parent.getGoalPath()
     #if current node in search tree (parent) is not in explored set:  
     if parent.State() not in explored:
+      #then add state to explored set
       explored.append(parent.State()) 
       # get all successors/children and push them onto frontier as Node instance:
       for child in problem.getSuccessors(parent.State()):
@@ -182,6 +183,7 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
+  #instantiate frontier as util.Queue() object thus implementing BFS due to FIFO queuing policy
   frontier = util.Queue()
   return graphSearch(problem, frontier)
   util.raiseNotDefined()
@@ -189,7 +191,52 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  #Define cost function as the cost of actions from problem.getCostOfActions()
+  #def costFunction(problem):
+  #  return problem.getCostOfActions([])
+  #cost = lambda path: problem.getCostOfActions([x[1] for x in path])
+  #def getPathCost(problem):
+  #  here
+  #frontier = util.PriorityQueueWithFunction(getPathCost)
+  #return graphSearch(problem, frontier)
+  #util.raiseNotDefined()
+  print "Start:", problem.getStartState()
+  print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+  print "Start's successors:", problem.getSuccessors(problem.getStartState())
+  
+  #instantiate frontier as PriorityQueue
+  frontier = util.PriorityQueue()
+  
+  # push start state onto frontier (aka fringe):
+  frontier.push(Node(problem.getStartState()),0)
+  # Initialize explored set as empty list:
+  explored = []
+  #here
+  while not frontier.isEmpty():
+    # pop search node from frontier and put it into parent variable (note that this removes the search node "parent" from frontier):
+    parent = frontier.pop()
+    # check if current node in search tree is goal state:
+    if problem.isGoalState(parent.State()):
+      #and if so, return the path from the goal to the start:
+      print "\n", "Found solution state!", "\n"
+      print "Solution state: ", "\n", parent.State()
+      return parent.getGoalPath()
+    #if current node in search tree (parent) is not in explored set:  
+    if parent.State() not in explored:
+      #then add state to explored set
+      explored.append(parent.State()) 
+      # get all successors/children and push them onto frontier as Node instance:
+      for child in problem.getSuccessors(parent.State()):
+        # recall that Node data structure is:
+        # (state, parent, action, pathCost)
+        # and the successor's data structure is:
+        # Start's successors: [((5, 4), 'South', 1), ((4, 5), 'West', 1)]
+        #Make totalPathCost variable for adding to Node objects in frontier and for setting queueing priority order:
+        totalPathCost = parent.pathCost() + child[2]
+        frontier.push(Node(child[0],parent,child[1],totalPathCost), totalPathCost)
+  #
+  #Or return empty list:
+  return []
 
 def nullHeuristic(state, problem=None):
   """
