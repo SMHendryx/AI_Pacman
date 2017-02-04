@@ -1,3 +1,4 @@
+#Note my path and python2.7 virtual env python2.7 
 cd /Users/seanhendryx/githublocal/AI_Pacman/search
 #DFS implementation should quickly find a solution for
 #python2.7 pacman.py -l tinyMaze -p SearchAgent
