@@ -248,6 +248,45 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
+  print "Start:", problem.getStartState()
+  print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+  print "Start's successors:", problem.getSuccessors(problem.getStartState())
+  #Code is mostly the same as UCS save that heuristic function has been added with totalPathCost to make priority variable
+  #instantiate frontier as PriorityQueue
+  frontier = util.PriorityQueue()
+  
+  # push start state onto frontier (aka fringe):
+  frontier.push(Node(problem.getStartState()),0)
+  # Initialize explored set as empty list:
+  explored = []
+  #here
+  while not frontier.isEmpty():
+    # pop search node from frontier and put it into parent variable (note that this removes the search node "parent" from frontier):
+    parent = frontier.pop()
+    # check if current node in search tree is goal state:
+    if problem.isGoalState(parent.State()):
+      #and if so, return the path from the goal to the start:
+      print "\n", "Found solution state!", "\n"
+      print "Solution state: ", "\n", parent.State()
+      return parent.getGoalPath()
+    #if current node in search tree (parent) is not in explored set:  
+    if parent.State() not in explored:
+      #then add state to explored set
+      explored.append(parent.State()) 
+      # get all successors/children and push them onto frontier as Node instance:
+      for child in problem.getSuccessors(parent.State()):
+        # recall that Node data structure is:
+        # (state, parent, action, pathCost)
+        # and the successor's data structure is:
+        # Start's successors: [((5, 4), 'South', 1), ((4, 5), 'West', 1)]
+        #Make totalPathCost variable for adding to Node objects in frontier and for setting queueing priority order:
+        totalPathCost = parent.pathCost() + child[2]
+        #Set priority of priority queue with f(n), which is g(n) + h(n), which is totalPathCost plus hueristic function
+        priority = totalPathCost + heuristic(child[0], problem)
+        frontier.push(Node(child[0],parent,child[1],totalPathCost), priority)
+  #
+  #Or return empty list:
+  return []
   util.raiseNotDefined()
     
   
