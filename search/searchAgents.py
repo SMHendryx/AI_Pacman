@@ -327,8 +327,9 @@ class CornersProblem(search.SearchProblem):
       #make sure next coordinates aren't walls:
       if not self.walls[nextx][nexty]:
         #make list of corners that haven't been visited yet:
-        cornersRemaining = list(state[1])
+        cornersRemaining = state[1][:]
         nextCoordinate = (nextx, nexty)
+        # if next coordinate is in cornersRemaining, remove form cornersRemaining:
         if nextCoordinate in cornersRemaining:
           cornersRemaining.remove(nextCoordinate)
         successor = (nextCoordinate, cornersRemaining)
