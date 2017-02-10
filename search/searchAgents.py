@@ -281,12 +281,18 @@ class CornersProblem(search.SearchProblem):
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    # Returns a state list including the starting position and a list of the corner coordinates from self.corners
+    print "self.corners in def getStartState(self): \n", self.corners
+    return (self.startingPosition, [self.corners[0], self.corners[1], self.corners[2], self.corners[3]])
+    
     
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # if length of second index, position [1], in state == 0, all four corners have been removed from the state data structure as defined in getStartState
+    # and, therefore, have been visited
+    return len(state[1]) == 0
        
   def getSuccessors(self, state):
     """
@@ -299,7 +305,10 @@ class CornersProblem(search.SearchProblem):
      required to get there, and 'stepCost' is the incremental 
      cost of expanding to that successor
     """
-    
+
+    #instantiate x,y variables from state:
+    x,y = state[0]
+
     successors = []
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
       # Add a successor state to the successor list if the action is legal
@@ -310,7 +319,21 @@ class CornersProblem(search.SearchProblem):
       #   hitsWall = self.walls[nextx][nexty]
       
       "*** YOUR CODE HERE ***"
-      
+      #here
+      #compute delta x and delta y (the amount of movement)
+      dx, dy = Actions.directionToVector(action)
+      #compute next coordinates:
+      nextx, nexty = int(x + dx), int(y + dy)
+      #make sure next coordinates aren't walls:
+      if not self.walls[nextx][nexty]:
+        #make list of corners that haven't been visited yet:
+        cornersRemaining = list(state[1])
+        nextCoordinate = (nextx, nexty)
+        if nextCoordinate in cornersRemaining:
+          cornersRemaining.remove(nextCoordinate)
+        successor = (nextCoordinate, cornersRemaining)
+        successors.append((successor, action, 1))
+    
     self._expanded += 1
     return successors
 
