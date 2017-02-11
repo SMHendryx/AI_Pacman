@@ -383,12 +383,12 @@ def cornersHeuristic(state, problem):
   
   #Instantiate reference coordinate as starting location:
   refCoor = state[0]
-  print "refCoor \n", refCoor
+  #print "refCoor \n", refCoor
   
   while len(cornersRemaining) > 0:
     # find closest corner coordinates:
     closestCorner = closestFoodDot(refCoor, cornersRemaining)[0]
-    print "closestCorner \n",  closestCorner
+    #print "closestCorner \n",  closestCorner
     # compute hn as summation of manhattan distances from reference coordinate to closest corner:
     hn += util.manhattanDistance(refCoor, closestCorner)
     #refCoor now becomes closestCorner:
@@ -508,7 +508,19 @@ def foodHeuristic(state, problem):
   """
   position, foodGrid = state
   "*** YOUR CODE HERE ***"
-  return 0
+
+  #First check to make sure there is food:
+  foodDots = foodGrid.asList()
+  if len(foodDots) == 0:
+    return 0
+
+  #find closest food dot (closestFoodDot returns: 
+  # (coordinates, cost):
+  closeDot = closestFoodDot(position,foodDots)
+
+  #return h(n) as the manhattan distance to the closest plus the number of food dots left:
+  return util.manhattanDistance(position, closeDot[0]) + len(foodDots)
+
   
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
