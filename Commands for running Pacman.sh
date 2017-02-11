@@ -35,5 +35,5 @@ python2.7 pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
 #update master branch on github repo with local changes:
 git add .
 git status
-git commit -m "Implemented CornersProblem search problem in searchAgents.py"
+git commit -m "Updates to CornersProblem search problem in searchAgents.py"
 git push origin master

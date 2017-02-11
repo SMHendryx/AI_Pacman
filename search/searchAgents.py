@@ -365,18 +365,65 @@ def cornersHeuristic(state, problem):
   on the shortest path from the state to a goal of the problem; i.e.
   it should be admissible.  (You need not worry about consistency for
   this heuristic to receive full credit.)
+
+  This heuristic returns the Manhattan distance cost (relaxed to disregard walls)
+  from the start state to the closest corner (again closest using Manhattan distance)
+  to the next closest corner to the previously visited corner and so on until all four
+  corners have been visited.
   """
   corners = problem.corners # These are the corner coordinates
   walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
   
   "*** YOUR CODE HERE ***"
-  return 0 # Default to trivial solution
+  #Instantiate heuristic function value to zero:
+  hn = 0
+
+  #retrieve list of corners from second index  state:
+  cornersRemaining = state[1][:]
+  
+  #Instantiate reference coordinate as starting location:
+  refCoor = state[0]
+  print "refCoor \n", refCoor
+  
+  while len(cornersRemaining) > 0:
+    # find closest corner coordinates:
+    closestCorner = closestFoodDot(refCoor, cornersRemaining)[0]
+    print "closestCorner \n",  closestCorner
+    # compute hn as summation of manhattan distances from reference coordinate to closest corner:
+    hn += util.manhattanDistance(refCoor, closestCorner)
+    #refCoor now becomes closestCorner:
+    refCoor = closestCorner
+    #And closestCorner is removed from cornersRemaing:
+    cornersRemaining.remove(closestCorner)
+
+  return hn  
+
+
+  #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
   def __init__(self):
     self.searchFunction = lambda prob: search.aStarSearch(prob, cornersHeuristic)
     self.searchType = CornersProblem
+
+def closestFoodDot(state, dots):
+  """
+  Returns a tuple of the coordinates and cost (i.e. distance) of manhattanDistance
+  Object returned is of data structure:
+  (coordinates, cost)
+  """
+  closest = ((), float('inf'))
+  
+  # Loop through dots to find closest:
+  for dot in dots:
+    cost = util.manhattanDistance(state, dot)
+    if cost < closest[1]:
+      closest = (dot, cost)
+  if closest[1] == float('inf'):
+    return ((),0)
+  else:
+    return closest
 
 class FoodSearchProblem:
   """
