@@ -565,7 +565,8 @@ class ClosestDotSearchAgent(SearchAgent):
     problem = AnyFoodSearchProblem(gameState)
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return search.aStarSearch(problem)
+    #util.raiseNotDefined()
   
 class AnyFoodSearchProblem(PositionSearchProblem):
   """
@@ -601,7 +602,10 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     x,y = state
     
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    #test is there food at my current location?:
+    return self.food[x][y]
+    #util.raiseNotDefined()
 
 ##################
 # Mini-contest 1 #
