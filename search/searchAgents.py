@@ -513,13 +513,30 @@ def foodHeuristic(state, problem):
   foodDots = foodGrid.asList()
   if len(foodDots) == 0:
     return 0
+  
 
   #find closest food dot (closestFoodDot returns: 
   # (coordinates, cost):
   closeDot = closestFoodDot(position,foodDots)
+  #print "closeDot \n", closeDot
+  #print foodDots
+  foodDots.remove(closeDot[0])
+  
+  currentPos = closeDot[0]
+  #Instantiate h(n)
+  hn = closeDot[1]
 
+  for dot in foodDots:
+    # find the next closest dot via manhattan distance:
+    dotCoor, cost = closestFoodDot(currentPos, foodDots)
+    #add cost to h(n):
+    hn += cost
+    currentPos = dotCoor
+    foodDots.remove(dotCoor)
+  
+  return hn
   #return h(n) as the manhattan distance to the closest plus the number of food dots left:
-  return util.manhattanDistance(position, closeDot[0]) + len(foodDots)
+  #return util.manhattanDistance(position, closeDot[0]) + len(foodDots)
 
   
 class ClosestDotSearchAgent(SearchAgent):
