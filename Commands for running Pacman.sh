@@ -29,11 +29,18 @@ python2.7 pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProble
 #Test " Implement a heuristic for the CornersProblem in cornersHeuristic":
 python2.7 pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
 
+#eating all the dots
+python2.7 pacman.py -l testSearch -p AStarFoodSearchAgent
+
+python2.7 pacman.py -l trickySearch -p AStarFoodSearchAgent
+
+#suboptimal search:
+python2.7 pacman.py -l bigSearch -p ClosestDotSearchAgent -z .5 
 
 
 ##################################################################################################
 #update master branch on github repo with local changes:
 git add .
 git status
-git commit -m "Updates to CornersProblem search problem in searchAgents.py"
+git commit -m "implemented suboptimal search"
 git push origin master
