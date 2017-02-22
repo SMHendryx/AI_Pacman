@@ -13,6 +13,8 @@ import string
 import time
 import types
 import Tkinter
+#my import:
+import os
 
 _Windows = sys.platform == 'win32'  # True if on Win95/98/NT
 
@@ -63,6 +65,8 @@ def begin_graphics(width=640, height=480, color=formatColor(0, 0, 0), title=None
     
     # Create the root window
     _root_window = Tkinter.Tk()
+    #my insert
+    os.system('''/usr/bin/osascript -e 'tell app "Finder" to set frontmost of process "Python" to true' ''')
     _root_window.protocol('WM_DELETE_WINDOW', _destroy_window)
     _root_window.title(title or 'Graphics Window')
     _root_window.resizable(0, 0)

@@ -1,4 +1,12 @@
 #Note my path and python2.7 virtual env python2.7 
+
+cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
+python2.7 pacman.py ­-p ReflexAgent
+python2.7 pacman.py -p ReflexAgent -l testClassic
+
+
+
+
 cd /Users/seanhendryx/githublocal/AI_Pacman/search
 #test
 python2.7 pacman.py
