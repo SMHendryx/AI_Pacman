@@ -4,6 +4,13 @@ cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
 python2.7 pacman.py ­-p ReflexAgent
 python2.7 pacman.py -p ReflexAgent -l testClassic
 
+python2.7 pacman.py -p ReflexAgent -l testClassic
+
+python2.7 pacman.py --frameTime 0 -p ReflexAgent -k 1
+
+python2.7 pacman.py -p ReflexAgent -l openClassic -n 10 -q
+
+
 
 
 

@@ -62,14 +62,58 @@ class ReflexAgent(Agent):
     """
     # Useful information you can extract from a GameState (pacman.py)
     successorGameState = currentGameState.generatePacmanSuccessor(action)
+    #print "successorGameState \n", successorGameState
     newPos = successorGameState.getPacmanPosition()
+    #print "newPos \n", newPos
     oldFood = currentGameState.getFood()
+    #print "oldFood \n", oldFood
     newGhostStates = successorGameState.getGhostStates()
+    #print "newGhostStates \n", newGhostStates
     newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+    #print "newScaredTimes \n", newScaredTimes
 
     "*** YOUR CODE HERE ***"
-    print "successorGameState.getScore() \n", successorGameState.getScore()
-    return successorGameState.getScore()
+    #print "successorGameState.getScore() \n", successorGameState.getScore()
+
+    #make list of food that is left:
+    foodList = oldFood.asList()
+
+    #instantiate closestFoodDist to floating value of infinity
+    closestFoodDist = float('inf')
+    
+    #First check if ghost is scared and close:
+
+    ghostScore = 0.
+    for state in newGhostStates:
+      #print "state.scaredTimer \n", state.scaredTimer
+      #compute distance to ghost_i
+      dist_g = manhattanDistance(newPos, state.getPosition())
+      #if, on proposed move, ghost is still scared and distance to ghost is 0:
+      if state.scaredTimer > 0 and dist_g == 0:
+        ghostScore = 100000.
+        #find manhattan distance to closest food
+        for food in foodList:
+          dist_f = manhattanDistance(food, newPos)
+          if(dist_f < closestFoodDist):
+            closestFoodDist = dist_f
+        return ghostScore + (1./closestFoodDist)
+      #else if the ghost is catchable and dist to ghost is greater than zero on next move:  
+      elif dist_g < state.scaredTimer:
+        ghostScore = 10000. + (1./dist_g)
+        return ghostScore
+      #else if ghosts are not catchable and are too close, ascribe negative value:  
+      elif dist_g < 3:
+        ghostScore = -1. * dist_g
+
+    #find manhattan distance to closest food
+    for food in foodList:
+      dist_f = manhattanDistance(food, newPos)
+      if(dist_f < closestFoodDist):
+        closestFoodDist = dist_f
+
+    # compute reflex heuristic:
+    score = 3./(-1. + ghostScore) + 1./(10. + closestFoodDist)
+    return score
 
 def scoreEvaluationFunction(currentGameState):
   """
