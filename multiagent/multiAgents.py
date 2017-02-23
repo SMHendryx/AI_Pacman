@@ -171,7 +171,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    #here
+
+    def getVal(self, gameState, searchDepth, agentIndex):
+      #Function calls either maxVal or minVal depending on agentIndex
+      #dive to next depth if traversed through all agents:
+      if agentIndex == gameState.getNumAgents():
+        searchDepth += 1
+        agentIndex = 0
+
+      actions = list(gameState.getLegalActions())
+
+      # if no more actions to search through or searchDepth == self.depth:
+      # return the value from the evaluation function
+      if len(actions) == 0 or searchDepth == self.depth():
+        return self.evaluationFunction(gameState)
+
+      #If pacman agent (i.e. at max search node)
+      if agentIndex == 0:
+        return self.maxVal(gameState, searchDepth, agentIndex)
+
+      return self.minVal(gameState, searchDepth, agentIndex)
+
+    def maxVal(self, gameState, searchDepth, agentIndex):
+      """
+      Returns a list including the utility of the state from a proposed action and 
+      and the action to get to that state
+      """  
+
+
+    #make decision by calling self.getVal which recursively calls maxVal or minVal 
+    #depending on whether agent is pacman (agent index == 0) or ghost, respectively
+    backedUpVal = self.getVal(gameState, 0, self.index)
+    #return action:
+    return backedUpVal[1]
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
   """
