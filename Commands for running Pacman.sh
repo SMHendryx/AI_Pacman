@@ -2,6 +2,11 @@
 
 
 cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
+
+#expectiMax
+python2.7 pacman.py -p ExpectimaxAgent -l trappedClassic -a depth=3 -q -n 10
+python2.7 pacman.py -p AlphaBetaAgent -l trappedClassic -a depth=3 -q -n 10
+
 #alphabeta pruning:
 time python2.7 pacman.py -p AlphaBetaAgent -a depth=3 -l smallClassic
 
