@@ -2,12 +2,18 @@
 
 
 cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
+#alphabeta pruning:
+time python2.7 pacman.py -p AlphaBetaAgent -a depth=3 -l smallClassic
+
 #minimax
 python2.7 pacman.py -p MinimaxAgent -l minimaxClassic -a depth=4
+python2.7 pacman.py -p MinimaxAgent -l minimaxClassic -a depth=3
+python2.7 pacman.py -p MinimaxAgent -l minimaxClassic -a depth=2
+python2.7 pacman.py -p MinimaxAgent -l minimaxClassic -a depth=1
 python2.7 pacman.py -p MinimaxAgent -l mediumClassic -a depth=4
 python2.7 pacman.py -p MinimaxAgent -l trappedClassic -a depth=3
 python2.7 pacman.py -p MinimaxAgent -l mediumClassic -a depth=4
-
+python2.7 pacman.py -p AlphaBetaAgent -a depth=3 -l smallClassic
 
 
 python2.7 pacman.py ­-p ReflexAgent
