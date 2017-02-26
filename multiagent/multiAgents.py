@@ -172,39 +172,109 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
     "*** YOUR CODE HERE ***"
     #here
-
-    def getVal(self, gameState, searchDepth, agentIndex):
-      #Function calls either maxVal or minVal depending on agentIndex
-      #dive to next depth if traversed through all agents:
-      if agentIndex == gameState.getNumAgents():
-        searchDepth += 1
-        agentIndex = 0
-
-      actions = list(gameState.getLegalActions())
-
-      # if no more actions to search through or searchDepth == self.depth:
-      # return the value from the evaluation function
-      if len(actions) == 0 or searchDepth == self.depth():
-        return self.evaluationFunction(gameState)
-
-      #If pacman agent (i.e. at max search node)
-      if agentIndex == 0:
-        return self.maxVal(gameState, searchDepth, agentIndex)
-
-      return self.minVal(gameState, searchDepth, agentIndex)
-
-    def maxVal(self, gameState, searchDepth, agentIndex):
-      """
-      Returns a list including the utility of the state from a proposed action and 
-      and the action to get to that state
-      """  
-
-
     #make decision by calling self.getVal which recursively calls maxVal or minVal 
     #depending on whether agent is pacman (agent index == 0) or ghost, respectively
-    backedUpVal = self.getVal(gameState, 0, self.index)
-    #return action:
-    return backedUpVal[1]
+    backedUpValueAction = self.getVal(gameState, 0, self.index)
+    print "backedUpValueAction \n", backedUpValueAction
+    #return action (which is second index in backedUpVal):
+    return backedUpValueAction[1]
+
+  def getVal(self, gameState, currentSearchDepth, agentIndex):
+    """
+    Function calls either maxVal or minVal depending on agentIndex
+    :param gameState: a gameState object
+    :param currentSearchDepth: the depth at which we are currently searching
+    :param agentIndex: the index of the agent for which getVal is being called
+    """
+    ##print "agentIndex \n", agentIndex
+    #print "getVal"
+
+    #dive to next depth if traversed through all agents (assuming adversarial environment):
+    if agentIndex == gameState.getNumAgents():
+      currentSearchDepth += 1
+      agentIndex = 0
+    ##print "gameState.getLegalActions() \n", gameState.getLegalActions()
+    ##print "gameState.getLegalActions(agentIndex) \n", gameState.getLegalActions(agentIndex)
+    ##print "gameState.getLegalActions(1) \n", gameState.getLegalActions(1)
+    ##print gameState
+    actions = list(gameState.getLegalActions(agentIndex))
+    #print "actions list in getVal \n", actions
+    if 'Stop' in actions and agentIndex == 0:
+      actions.remove('Stop')
+      #print "actions list in getVal after actions.remove('Stop') \n", actions
+    
+    # if no more actions to search through or currentSearchDepth == self.depth (which is the depth of deepest search):
+    # return the value from the evaluation function
+    if (len(actions) == 0) or (currentSearchDepth == self.depth):
+      #print "[self.evaluationFunction(gameState)] \n", [self.evaluationFunction(gameState)]
+      return [self.evaluationFunction(gameState)]
+
+    #If pacman agent (i.e. at max search node)
+    if agentIndex == 0:
+      return self.maxVal(gameState, currentSearchDepth, agentIndex)
+    
+    #else return minVal (i.e. we are at min node)
+    return self.minVal(gameState, currentSearchDepth, agentIndex)
+
+  def maxVal(self, gameState, currentSearchDepth, agentIndex):
+    """
+    Returns a list including the action to get to the state with the maximum  value and the value of that state from the proposed action
+    First item in list is the value resulting from action, second item is the action
+    """ 
+    #instantiate value to negative infinity inside a list (since we will also put action inside of this variable) 
+    #print "maxVal \n"
+    v = [float('-inf'), 'action']
+    
+    actions = gameState.getLegalActions(agentIndex)
+    ##print "type(actions) \n", type(actions):
+    # ^ type is list
+    ##print "gameState.getLegalActions(agentIndex) \n", actions
+    
+    #Loop through legal actions and select next search node with highest value
+    for a in actions:
+      #print "a in maxVal \n", a
+      nextState = gameState.generateSuccessor(agentIndex, a)
+      #get value of next state (add one to agentIndex (this will 
+      # cycle through agents, e.g. 0 becomes 1, thereby calling self.minVal() from self.getVal()))
+      nextV = self.getVal(nextState, currentSearchDepth, agentIndex + 1)[0]
+      
+      #print "nextV \n", nextV
+      #print "v \n", v
+      #logic to find action that generates next state with highest value
+      if nextV >= v[0]:
+        v = [nextV, a]
+        #print "v in maxVal after if nextV >= v[0]: (line 241): \n", v
+    #
+    return v
+
+  def minVal(self, gameState, currentSearchDepth, agentIndex):
+    """
+    Returns a list including the action to get to the state with the minimum value and the value of that state from the proposed action
+    First item in list is the action, second item is the value resulting from that action
+    """
+    #instantiate value to negative infinity inside a list (since we will also put action inside of this variable)
+    #print "minVal"
+    v = [float('inf'), 'action']
+    
+    actions = gameState.getLegalActions(agentIndex)
+    ##print "gameState.getLegalActions(agentIndex) \n", actions
+    
+    #Loop through legal actions and select next search node with highest value
+    for a in actions:
+      #print "a in minVal \n", a
+      nextState = gameState.generateSuccessor(agentIndex, a)
+      #get value of next state (add one to agentIndex (this will 
+      # cycle through agents, e.g. 0 becomes 1, thereby calling self.minVal() from self.getVal()))
+      nextV = self.getVal(nextState, currentSearchDepth, agentIndex + 1)[0]
+      # ERROR IS HERE: nextV is becoming action when it should be a value
+      #print "nextV \n", nextV
+      #print "v \n", v
+      #logic to find action that generates next state with highest value
+      if nextV <= v[0]:
+        v = [nextV, a]
+        #print "v in minVal after if nextV <= v[0]: (line 270) \n", v
+    #
+    return v
 
 
 

@@ -1,6 +1,15 @@
 #Note my path and python2.7 virtual env python2.7 
 
+
 cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
+#minimax
+python2.7 pacman.py -p MinimaxAgent -l minimaxClassic -a depth=4
+python2.7 pacman.py -p MinimaxAgent -l mediumClassic -a depth=4
+python2.7 pacman.py -p MinimaxAgent -l trappedClassic -a depth=3
+python2.7 pacman.py -p MinimaxAgent -l mediumClassic -a depth=4
+
+
+
 python2.7 pacman.py ­-p ReflexAgent
 python2.7 pacman.py -p ReflexAgent -l testClassic
 
