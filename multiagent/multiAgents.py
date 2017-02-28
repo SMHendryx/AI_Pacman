@@ -6,6 +6,8 @@
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
 
+#Functions completed by Sean Hendryx
+
 from util import manhattanDistance
 from game import Directions
 import random, util
@@ -180,7 +182,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
   def getVal(self, gameState, currentSearchDepth, agentIndex):
     """
-    Function calls either maxVal or minVal depending on agentIndex
+    Function calls either maxVal or minVal depending on agentIndex and then calls the evaluation function at the leaves of the search tree
     :param gameState: a gameState object
     :param currentSearchDepth: the depth at which we are currently searching
     :param agentIndex: the index of the agent for which getVal is being called
@@ -540,7 +542,9 @@ def betterEvaluationFunction(currentGameState):
   The evaluation function first checks whether or not ghosts are scared.  
   If scared, the ghost are valued highly.
   The score is a linear combination of weights applied to distance from closest ghost (such that the closer the ghost, the less the score),
-  manhattan distance to all food pellets (the less the distance the higher the score), and the number of remaining food pellets (the lower the number the higher the score).
+  manhattan distance to all food pellets (the less the distance the higher the score), and the number of remaining food pellets (the lower the number the higher the score).  Note that
+  to make states with close ghosts exponentially less desirable depending on the closeness of the ghost, the distance of the ghost is in an exponent in the denominator such that closer ghosts yield an exponentially 
+  more negative score: -1./(1.*(2. ** dist_g))
   FoodDist is computed as the total sum of the Manhattan Distance from current position to every remaining food pellet
 
   """
@@ -569,35 +573,14 @@ def betterEvaluationFunction(currentGameState):
 
   #First check if ghost is scared and close:
   
-  ghostScore = 0.
   #Find closest Ghost:
   dist_g = float('inf')
   for state in newGhostStates:
-    #print "state.scaredTimer \n", state.scaredTimer
     #compute distance to ghost_i
     new_dist_g = manhattanDistance(newPos, state.getPosition())
-    #print "new_dist_g \n", new_dist_g
     if new_dist_g < dist_g:
       dist_g = new_dist_g
-    #print "dist_g \n", dist_g  
-
-    #if, on proposed move, ghost is still scared and distance to ghost is 0:
-    #
-    #  ghostScore = 10000000.
-      #find manhattan distance to closest food to incorporate food locations into chasing ghosts
-      #for food in foodList:
-      #  dist_f = manhattanDistance(food, newPos)
-      #  if(dist_f < closestFoodDist):
-      #    closestFoodDist = dist_f
-      #return ghostScore + (1./closestFoodDist)
-    #  return ghostScore
-    #else if the ghost is catchable and dist to ghost is greater than zero on next move:  
-    #elif dist_g < state.scaredTimer:
-    #  ghostScore = 10000000. + (1./dist_g)
-    #  return ghostScore
-    #else if ghosts are not catchable and are too close, ascribe negative value:  
-    #elif dist_g < 3:
-    #  ghostScore -= 1000. * dist_g
+  
   
   #compute distance to every food and sum
   dist_f = 0.
@@ -611,34 +594,30 @@ def betterEvaluationFunction(currentGameState):
     new_dist_c = manhattanDistance(newPos, cap)
     if new_dist_c < dist_c:
       dist_c = new_dist_c
-  print "dist_c \n", dist_c    
+  #print "dist_c \n", dist_c   
 
   capScore = 0.
   if dist_c == 0:
     capScore = 100
-    print "explored cap!"
-    print "capScore \n", capScore  
+  #  print "explored cap!"
+  #  print "capScore \n", capScore  
   
   # compute eval score
   #compute weights:
-  # Should be:
-  print "ghost distance weight when dist_g = {} \n".format(dist_g),-1./(1.*(2. ** dist_g))
-  print "food distance weight when dist_f = {} \n".format(dist_f),  1./(1. + dist_f)
-  print "food length weight when len(foodList) = {} \n".format(len(foodList)), 10./(1. + (.5 * len(foodList)))
+  #print "ghost distance weight when dist_g = {} \n".format(dist_g),-1./(1.*(2. ** dist_g))
+  #print "food distance weight when dist_f = {} \n".format(dist_f),  1./(1. + dist_f)
+  #print "food length weight when len(foodList) = {} \n".format(len(foodList)), 10./(1. + (.5 * len(foodList)))
   
   if state.scaredTimer > 0 and dist_g == 0:
-    print "Ghost scared and dist == 0 \n"
+    #print "Ghost scared and dist == 0 \n"
     score = 3. + 1./(1+1.*(dist_g)) + 1./(1. + dist_f) + 10./(1. + (.5 * len(foodList)))
   elif dist_g < state.scaredTimer:
-    print "Ghost scared dist_g < state.scaredTimer \n"
+    #print "Ghost scared dist_g < state.scaredTimer \n"
     score = 1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) + 10./(1. + (.5 * len(foodList)))
-  #elif dist_c == 0:
-  #  print "dist_c == 0 \n"
-  #  score = 3. +  -1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) +  10./(1. + (.5 * len(foodList))) + capScore
   else:
     score = -1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) +  10./(1. + (.5 * len(foodList))) + capScore
-  #old: score += ghostScore + 1./(1000. + dist_f) + 1./(1 + len(foodList))
-  print "score \n", score
+  
+  #print "score \n", score
   return score
 
 # Abbreviation
