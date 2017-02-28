@@ -174,7 +174,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     #make decision by calling self.getVal which recursively calls maxVal or minVal 
     #depending on whether agent is pacman (agent index == 0) or ghost, respectively
     backedUpValueAction = self.getVal(gameState, 0, self.index)
-    print "backedUpValueAction \n", backedUpValueAction
+    #print "backedUpValueAction \n", backedUpValueAction
     #return action (which is second index in backedUpVal):
     return backedUpValueAction[1]
 
@@ -205,7 +205,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     # if no more actions to search through or currentSearchDepth == self.depth (which is the depth of deepest search):
     # return the value from the evaluation function
     if (len(actions) == 0) or (currentSearchDepth == self.depth):
-      #print "[self.evaluationFunction(gameState)] \n", [self.evaluationFunction(gameState)]
+      print "[self.evaluationFunction(gameState)] \n", [self.evaluationFunction(gameState)]
       return [self.evaluationFunction(gameState)]
 
     #If pacman agent (i.e. at max search node)
@@ -221,7 +221,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     First item in list is the value resulting from action, second item is the action
     """ 
     #instantiate value to negative infinity inside a list (since we will also put action inside of this variable) 
-    #print "maxVal \n"
+    print "maxVal \n"
     v = [float('-inf'), 'action']
     
     actions = gameState.getLegalActions(agentIndex)
@@ -233,18 +233,18 @@ class MinimaxAgent(MultiAgentSearchAgent):
     
     #Loop through legal actions and select next search node with highest value
     for a in actions:
-      #print "a in maxVal \n", a
+      print "a in maxVal \n", a
       nextState = gameState.generateSuccessor(agentIndex, a)
       #get value of next state (add one to agentIndex (this will 
       # cycle through agents, e.g. 0 becomes 1, thereby calling self.minVal() from self.getVal()))
       nextV = self.getVal(nextState, currentSearchDepth, agentIndex + 1)[0]
       
-      #print "nextV \n", nextV
-      #print "v \n", v
+      print "nextV \n", nextV
+      print "v \n", v
       #logic to find action that generates next state with highest value
       if nextV >= v[0]:
         v = [nextV, a]
-        #print "v in maxVal after if nextV >= v[0]: (line 241): \n", v
+        print "v in maxVal after if nextV >= v[0]: (line 241): \n", v
     #
     return v
 
@@ -254,7 +254,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     First item in list is the action, second item is the value resulting from that action
     """
     #instantiate value to negative infinity inside a list (since we will also put action inside of this variable)
-    #print "minVal"
+    print "minVal"
     v = [float('inf'), 'action']
     
     actions = gameState.getLegalActions(agentIndex)
@@ -264,18 +264,18 @@ class MinimaxAgent(MultiAgentSearchAgent):
     
     #Loop through legal actions and select next search node with highest value
     for a in actions:
-      #print "a in minVal \n", a
+      print "a in minVal \n", a
       nextState = gameState.generateSuccessor(agentIndex, a)
       #get value of next state (add one to agentIndex (this will 
       # cycle through agents, e.g. 0 becomes 1, thereby calling self.minVal() from self.getVal()))
       nextV = self.getVal(nextState, currentSearchDepth, agentIndex + 1)[0]
       
-      #print "nextV \n", nextV
-      #print "v \n", v
+      print "nextV \n", nextV
+      print "v \n", v
       #logic to find action that generates next state with highest value
       if nextV <= v[0]:
         v = [nextV, a]
-        #print "v in minVal after if nextV <= v[0]: (line 270) \n", v
+        print "v in minVal after if nextV <= v[0]: (line 270) \n", v
     #
     return v
 
@@ -294,7 +294,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     #make decision by calling self.getVal which recursively calls maxVal or minVal 
     #depending on whether agent is pacman (agent index == 0) or ghost, respectively
     backedUpValueAction = self.getVal(gameState, 0, self.index, float('-inf'), float('inf'))
-    print "backedUpValueAction \n", backedUpValueAction
+    #print "backedUpValueAction \n", backedUpValueAction
     #return action (which is second index in backedUpVal):
     return backedUpValueAction[1]
 
@@ -421,7 +421,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
     #make decision by calling self.getVal which recursively calls maxVal or minVal 
     #depending on whether agent is pacman (agent index == 0) or ghost, respectively
     backedUpValueAction = self.getVal(gameState, 0, self.index)
-    print "backedUpValueAction \n", backedUpValueAction
+    #print "backedUpValueAction \n", backedUpValueAction
     #return action (which is second index in backedUpVal):
     return backedUpValueAction[1]
 
@@ -532,13 +532,114 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
 
 def betterEvaluationFunction(currentGameState):
   """
-    Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
-    evaluation function (question 5).
+  Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
+  evaluation function (question 5).
 
-    DESCRIPTION: <write something here so we know what you did>
+  DESCRIPTION: <write something here so we know what you did>
+  First, recall that higher scores are better.
+  The evaluation function first checks whether or not ghosts are scared.  
+  If scared, the ghost are valued highly.
+  The score is a linear combination of weights applied to distance from closest ghost (such that the closer the ghost, the less the score),
+  manhattan distance to all food pellets (the less the distance the higher the score), and the number of remaining food pellets (the lower the number the higher the score).
+  FoodDist is computed as the total sum of the Manhattan Distance from current position to every remaining food pellet
+
   """
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  # Useful information you can extract from a GameState (pacman.py)
+  
+  newPos = currentGameState.getPacmanPosition()
+  #print "newPos \n", newPos
+  oldFood = currentGameState.getFood()
+  #print "oldFood \n", oldFood
+  newGhostStates = currentGameState.getGhostStates()
+  #print "newGhostStates \n", newGhostStates
+  newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+  #print "newScaredTimes \n", newScaredTimes
+  capsules = currentGameState.getCapsules()
+  #print "capsules \n", capsules
+
+  "*** YOUR CODE HERE ***"
+  #print "successorGameState.getScore() \n", successorGameState.getScore()
+
+  #make list of food that is left:
+  foodList = oldFood.asList()
+  
+  #instantiate score to 0.
+  score = 0.
+
+  #First check if ghost is scared and close:
+  
+  ghostScore = 0.
+  #Find closest Ghost:
+  dist_g = float('inf')
+  for state in newGhostStates:
+    #print "state.scaredTimer \n", state.scaredTimer
+    #compute distance to ghost_i
+    new_dist_g = manhattanDistance(newPos, state.getPosition())
+    #print "new_dist_g \n", new_dist_g
+    if new_dist_g < dist_g:
+      dist_g = new_dist_g
+    #print "dist_g \n", dist_g  
+
+    #if, on proposed move, ghost is still scared and distance to ghost is 0:
+    #
+    #  ghostScore = 10000000.
+      #find manhattan distance to closest food to incorporate food locations into chasing ghosts
+      #for food in foodList:
+      #  dist_f = manhattanDistance(food, newPos)
+      #  if(dist_f < closestFoodDist):
+      #    closestFoodDist = dist_f
+      #return ghostScore + (1./closestFoodDist)
+    #  return ghostScore
+    #else if the ghost is catchable and dist to ghost is greater than zero on next move:  
+    #elif dist_g < state.scaredTimer:
+    #  ghostScore = 10000000. + (1./dist_g)
+    #  return ghostScore
+    #else if ghosts are not catchable and are too close, ascribe negative value:  
+    #elif dist_g < 3:
+    #  ghostScore -= 1000. * dist_g
+  
+  #compute distance to every food and sum
+  dist_f = 0.
+  for food in foodList:
+    dist_f += manhattanDistance(food, newPos)
+
+  #value capsules
+  #first find closest capsule:
+  dist_c = float('inf')
+  for cap in capsules:
+    new_dist_c = manhattanDistance(newPos, cap)
+    if new_dist_c < dist_c:
+      dist_c = new_dist_c
+  print "dist_c \n", dist_c    
+
+  capScore = 0.
+  if dist_c == 0:
+    capScore = 100
+    print "explored cap!"
+    print "capScore \n", capScore  
+  
+  # compute eval score
+  #compute weights:
+  # Should be:
+  print "ghost distance weight when dist_g = {} \n".format(dist_g),-1./(1.*(2. ** dist_g))
+  print "food distance weight when dist_f = {} \n".format(dist_f),  1./(1. + dist_f)
+  print "food length weight when len(foodList) = {} \n".format(len(foodList)), 10./(1. + (.5 * len(foodList)))
+  
+  if state.scaredTimer > 0 and dist_g == 0:
+    print "Ghost scared and dist == 0 \n"
+    score = 3. + 1./(1+1.*(dist_g)) + 1./(1. + dist_f) + 10./(1. + (.5 * len(foodList)))
+  elif dist_g < state.scaredTimer:
+    print "Ghost scared dist_g < state.scaredTimer \n"
+    score = 1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) + 10./(1. + (.5 * len(foodList)))
+  #elif dist_c == 0:
+  #  print "dist_c == 0 \n"
+  #  score = 3. +  -1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) +  10./(1. + (.5 * len(foodList))) + capScore
+  else:
+    score = -1./(1.*(2. ** dist_g)) + 1./(1. + dist_f) +  10./(1. + (.5 * len(foodList))) + capScore
+  #old: score += ghostScore + 1./(1000. + dist_f) + 1./(1 + len(foodList))
+  print "score \n", score
+  return score
 
 # Abbreviation
 better = betterEvaluationFunction

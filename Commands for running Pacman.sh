@@ -3,6 +3,13 @@
 
 cd /Users/seanhendryx/githublocal/AI_Pacman/multiagent
 
+#better eval func:
+python2.7 pacman.py -l smallClassic -p ExpectimaxAgent -a evalFn=better --frameTime 0 
+
+python2.7 pacman.py -l smallClassic -p ExpectimaxAgent -a evalFn=better -q -n 10
+python2.7 pacman.py -l smallClassic -p ExpectimaxAgent -a evalFn=better -q -n 2
+
+
 #expectiMax
 python2.7 pacman.py -p ExpectimaxAgent -l trappedClassic -a depth=3 -q -n 10
 python2.7 pacman.py -p AlphaBetaAgent -l trappedClassic -a depth=3 -q -n 10
